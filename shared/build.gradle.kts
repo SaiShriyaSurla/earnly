@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.0"
 }
 
 kotlin {
@@ -17,32 +18,33 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     android {
-       namespace = "com.shriya.earnly.aggregator.shared"
-       compileSdk = libs.versions.android.compileSdk.get().toInt()
-       minSdk = libs.versions.android.minSdk.get().toInt()
-    
-       compilerOptions {
-           jvmTarget = JvmTarget.JVM_11
-       }
-       androidResources {
-           enable = true
-       }
-       withHostTest {
-           isIncludeAndroidResources = true
-       }
-       withDeviceTestBuilder {
-           sourceSetTreeName = "test"
-       }.configure {
-           instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-       }
+        namespace = "com.shriya.earnly.aggregator.shared"
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
+
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_11
+        }
+        androidResources {
+            enable = true
+        }
+        withHostTest {
+            isIncludeAndroidResources = true
+        }
+        withDeviceTestBuilder {
+            sourceSetTreeName = "test"
+        }.configure {
+            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        }
     }
-    
+
     sourceSets {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.compose.uiTooling)
+            implementation("io.ktor:ktor-client-okhttp:2.3.0")  // MOVED HERE (Android-only)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -58,6 +60,8 @@ kotlin {
             implementation("io.ktor:ktor-client-cio:2.3.3")
             implementation("io.ktor:ktor-client-content-negotiation:2.3.3")
             implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.3")
+            // REMOVED OkHttp from here
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
         }
         commonTest.dependencies {
